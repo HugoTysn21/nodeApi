@@ -1,6 +1,6 @@
 'use strict';
 
-class User {
+module.exports = class User {
 
     login;
     pswd;
