@@ -1,0 +1,20 @@
+{
+  "name": "node_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoTysn21/nodeApi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HugoTysn21/nodeApi/issues"
+  },
+  "homepage": "https://github.com/HugoTysn21/nodeApi#readme"
+}
