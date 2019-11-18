@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/HugoTysn21/nodeApi/issues"
   },
-  "homepage": "https://github.com/HugoTysn21/nodeApi#readme"
+  "homepage": "https://github.com/HugoTysn21/nodeApi#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "mssql": "^6.0.1"
+  }
 }
