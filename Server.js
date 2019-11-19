@@ -26,7 +26,7 @@ app.get('/', function(req, res) {
 let ExtractJwt = passportJWT.ExtractJwt;
 // JwtStrategy which is the strategy for the authentication
 let JwtStrategy = passportJWT.Strategy;
-let jwtOptions = {};jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+let jwtOptions = {};jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearertoken();
 jwtOptions.secretOrKey = 'yeswecan';
 
 // strategy for web token
@@ -118,7 +118,7 @@ User.sync()
 .catch(err => console.log('BTW, did you enter wrong database credentials?'));
 
 //add the token to user
-// const addTokenToUser = async(token, user_id)=>{
+// const addtokenToUser = async(token, user_id)=>{
 //     let userUser.where(id:user_id)
 // return await User.update(token, where id: user_id);
 // };
@@ -183,6 +183,18 @@ const updArticle = async (updatedAt,title, content, id) => {
         }
     });
 };
+const deleteArticle = async (usr_id, art_id) => {
+    return Article.destroy({
+        where:{
+            user_id:{
+                [Op.eq]:usr_id
+            },
+            article_id:{
+                [Op.eq]:art_id
+            },
+        }
+    });
+};
 //recuperer les articles
 app.get('/article', function(req, res,next){
     getAllArticles().then(article => res.json(article));
@@ -195,16 +207,25 @@ app.post('/article',urlEncodeParser, function(req, res, next) {
 });
 //màj article
 app.put('/article', urlEncodeParser, function(req, res, next){
-    let tOken = req.body.jwt;
-    var decoded = jwt.verify(tOken,'yeswecan');
+    let token = req.body.jwt;
+    var decoded = jwt.verify(token,'yeswecan');
     console.log(decoded);
-    let payload = jwt.decode(tOken)
+    let payload = jwt.decode(token)
     let id = payload.id;
     var date = new Date();
     var title = req.body.title;
     var content = req.body.content;
     updArticle(date, title,content, id).then(article =>
         res.json({ article, msg: 'article updated successfully' }))
+});
+//Supprimer une article
+app.put('/deleteArticle', urlEncodeParser, function(req, res, next){
+    let token = req.body.jwt;
+    var decoded = jwt.verify(token,'yeswecan');
+    let payload = jwt.decode(token)
+    let usr_id = payload.id;
+    var art_id = req.body.art_id
+    deleteArticle(usr_id, art_id).then(res.json({ msg: 'article deleted successfully' }))
 });
 
 
@@ -220,7 +241,37 @@ const Commentaire = sequelize.define('commentaire', {
         type: Sequelize.INTEGER,
     },
 });
+//maj commentaire
+const updCommentaire = async (updatedAt, content, id, art_id) => {
+    return Commentaire.update({
+        updatedAt : updatedAt,
+        content: content,
+    }, {
+        where:{
+            user_id:{
+                [Op.eq]:id
+            },
+            article_id:{
+                [Op.eq]:art_id
+            }
+        }
+    });
+};
+//suppr commentaire
+const deleteCommentaire = async (usr_id, comm_id) => {
+    return Commentaire.destroy({
+        where:{
+            user_id:{
+                [Op.eq]:usr_id
+            },
+            commentaire_id:{
+                [Op.eq]:comm_id
+            },
+        }
+    });
+};
 
+//creation commentaire
 const createCommentaire = async ({content, user_id, article_id}) => {
     return Commentaire.create({content, user_id, article_id});
 };
@@ -230,14 +281,37 @@ Commentaire.sync()
 const getAllCommentaire = async () => {
     return await Commentaire.findAll();
 };
+//recup tous les commentaires
 app.get('/commentaire', function(req, res,next){
     getAllCommentaire().then(commentaire => res.json(commentaire));
 });
+//ajouter un commentaire
 app.post('/commentaire',urlEncodeParser, function(req, res, next) {
     createCommentaire(req.body).then(commentaire =>
         res.json({ commentaire, msg: 'commentaire created successfully' })
     )
-    });
+});
+//maj commentaire
+app.put('/commentaire',urlEncodeParser,function(req,res,next){
+    let token = req.body.jwt;
+    var decoded = jwt.verify(token,'yeswecan');
+    let payload = jwt.decode(token)
+    let id = payload.id;
+    var date = new Date();
+    var content = req.body.content;
+    var art_id = req.body.art_id;
+    updCommentaire(date, title,content, id,art_id).then(commentaire =>
+        res.json({ commentaire, msg: 'commentaire updated successfully' }))
+});
+//supprimer commentaire
+app.put('/deleteCommentaire', urlEncodeParser, function(req, res, next){
+    let token = req.body.jwt;
+    var decoded = jwt.verify(token,'yeswecan');
+    let payload = jwt.decode(token)
+    let usr_id = payload.id;
+    var comm_id = req.body.comm_id
+    deleteCommentaire(usr_id, comm_id).then(res.json({ msg: 'Commentaire deleted successfully' }))
+});
 
 //create model for DB
 const Follow = sequelize.define('follow', {
@@ -252,11 +326,48 @@ const Follow = sequelize.define('follow', {
 Follow.sync()
     .then(() => console.log('Oh yeah! Follow table created successfully'))
 .catch(err => console.log('BTW, did you enter wrong database credentials?'));
+//unfollow
+const unfollow = async (user_id, followed_id) => {
+    return await Follow.destroy({
+        where:{
+            follower_id:{
+                [Op.eq]:user_id
+            },
+            followed_id:{
+                [Op.eq]:followed_id
+            }
+        }
+    })
+};
+//follow
+const follow = async (user_id, followed_id) => {
+    return await Follow.create({user_id, followed_id})
+};
+//recup tous les follow
 const getAllFollow = async () => {
     return await Follow.findAll();
 };
 app.get('/follow', function(req, res,next){
     getAllFollow().then(follow => res.json(follow));
+});
+//follow qqun
+app.post('/follow', urlEncodeParser, function(req,res, next){
+    let token = req.body.jwt;
+    var decoded = jwt.verify(token,'yeswecan');
+    let payload = jwt.decode(token)
+    let user_id = payload.id;
+    var followed_id = req.body.followed_id;
+    follow(user_id,followed_id).then(follow =>
+        res.json({ follow, msg: 'followed successfully' }))
+});
+//unfollow
+app.put('/unfollow', function(req,res,next){
+    let token = req.body.jwt;
+    var decoded = jwt.verify(token,'yeswecan');
+    let payload = jwt.decode(token)
+    let user_id = payload.id;
+    var followed_id = req.body.followed_id;
+    unfollow(user_id, followed_id).then(res.json({msg: 'unfollowed successfully' }));
 });
 
 console.log("Hello world, This is an app to connect to sql server.");
