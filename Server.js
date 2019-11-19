@@ -6,7 +6,7 @@ var urlEncodeParser = bodyParser.urlencoded({extended:false});
 const app = express();
 const Sequelize = require('sequelize');
 const userClass = require('./Model/User');
-const articleClass = require('./Model/Article')
+const articleClass = require('./Model/Article');
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const jwt = require("jsonwebtoken");
@@ -44,10 +44,10 @@ app.use(passport.initialize());
 
  //login route
 app.post('/login', async function(req, res, next) {
-const { name, password } = req.body;
-if (name && password) {
+const { login, password } = req.body;
+if (login && password) {
     // we get the user with the name and save the resolved promise returned
-    let user = await getUser({ name });
+    let user = await getUser({ login });
     if (!user) {
         res.status(401).json({ msg: 'No such user found', user });
     }
@@ -55,8 +55,11 @@ if (name && password) {
         // from now on we’ll identify the user by the id and the id is
         // the only personalized value that goes into our token
         let payload = { id: user.id };
+        // the token is the user id and secretKey
         let token = jwt.sign(payload, jwtOptions.secretOrKey);
+
         res.json({ msg: 'ok', token: token });
+        console.log(token)
     } else {
         res.status(401).json({ msg: 'Password is incorrect' });
     }
