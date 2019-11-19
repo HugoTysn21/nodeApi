@@ -26,7 +26,7 @@ app.get('/', function(req, res) {
 let ExtractJwt = passportJWT.ExtractJwt;
 // JwtStrategy which is the strategy for the authentication
 let JwtStrategy = passportJWT.Strategy;
-let jwtOptions = {};jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearertoken();
+let jwtOptions = {};jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = 'yeswecan';
 
 // strategy for web token
@@ -52,11 +52,13 @@ if (login && password) {
     if (!user) {
         res.status(401).json({ msg: 'No such user found', user });
     }
-    // validate login and create token
     if (user.password === password) {
+        // from now on we’ll identify the user by the id and the id is
+        // the only personalized value that goes into our token
         let payload = { id: user.id };
         // the token is the user id and secretKey
         let token = jwt.sign(payload, jwtOptions.secretOrKey);
+
         res.json({ msg: 'ok', token: token });
         console.log(token)
 
@@ -116,7 +118,7 @@ User.sync()
 .catch(err => console.log('BTW, did you enter wrong database credentials?'));
 
 //add the token to user
-// const addtokenToUser = async(token, user_id)=>{
+// const addTokenToUser = async(token, user_id)=>{
 //     let userUser.where(id:user_id)
 // return await User.update(token, where id: user_id);
 // };
@@ -205,10 +207,10 @@ app.post('/article',urlEncodeParser, function(req, res, next) {
 });
 //màj article
 app.put('/article', urlEncodeParser, function(req, res, next){
-    let token = req.body.jwt;
-    var decoded = jwt.verify(token,'yeswecan');
+    let tOken = req.body.jwt;
+    var decoded = jwt.verify(tOken,'yeswecan');
     console.log(decoded);
-    let payload = jwt.decode(token)
+    let payload = jwt.decode(tOken)
     let id = payload.id;
     var date = new Date();
     var title = req.body.title;
@@ -218,9 +220,9 @@ app.put('/article', urlEncodeParser, function(req, res, next){
 });
 //Supprimer une article
 app.put('/deleteArticle', urlEncodeParser, function(req, res, next){
-    let token = req.body.jwt;
-    var decoded = jwt.verify(token,'yeswecan');
-    let payload = jwt.decode(token)
+    let tOken = req.body.jwt;
+    var decoded = jwt.verify(tOken,'yeswecan');
+    let payload = jwt.decode(tOken)
     let usr_id = payload.id;
     var art_id = req.body.art_id
     deleteArticle(usr_id, art_id).then(res.json({ msg: 'article deleted successfully' }))
@@ -291,9 +293,9 @@ app.post('/commentaire',urlEncodeParser, function(req, res, next) {
 });
 //maj commentaire
 app.put('/commentaire',urlEncodeParser,function(req,res,next){
-    let token = req.body.jwt;
-    var decoded = jwt.verify(token,'yeswecan');
-    let payload = jwt.decode(token)
+    let tOken = req.body.jwt;
+    var decoded = jwt.verify(tOken,'yeswecan');
+    let payload = jwt.decode(tOken)
     let id = payload.id;
     var date = new Date();
     var content = req.body.content;
@@ -303,9 +305,9 @@ app.put('/commentaire',urlEncodeParser,function(req,res,next){
 });
 //supprimer commentaire
 app.put('/deleteCommentaire', urlEncodeParser, function(req, res, next){
-    let token = req.body.jwt;
-    var decoded = jwt.verify(token,'yeswecan');
-    let payload = jwt.decode(token)
+    let tOken = req.body.jwt;
+    var decoded = jwt.verify(tOken,'yeswecan');
+    let payload = jwt.decode(tOken)
     let usr_id = payload.id;
     var comm_id = req.body.comm_id
     deleteCommentaire(usr_id, comm_id).then(res.json({ msg: 'Commentaire deleted successfully' }))
@@ -350,9 +352,9 @@ app.get('/follow', function(req, res,next){
 });
 //follow qqun
 app.post('/follow', urlEncodeParser, function(req,res, next){
-    let token = req.body.jwt;
-    var decoded = jwt.verify(token,'yeswecan');
-    let payload = jwt.decode(token)
+    let tOken = req.body.jwt;
+    var decoded = jwt.verify(tOken,'yeswecan');
+    let payload = jwt.decode(tOken)
     let user_id = payload.id;
     var followed_id = req.body.followed_id;
     follow(user_id,followed_id).then(follow =>
@@ -360,9 +362,9 @@ app.post('/follow', urlEncodeParser, function(req,res, next){
 });
 //unfollow
 app.put('/unfollow', function(req,res,next){
-    let token = req.body.jwt;
-    var decoded = jwt.verify(token,'yeswecan');
-    let payload = jwt.decode(token)
+    let tOken = req.body.jwt;
+    var decoded = jwt.verify(tOken,'yeswecan');
+    let payload = jwt.decode(tOken)
     let user_id = payload.id;
     var followed_id = req.body.followed_id;
     unfollow(user_id, followed_id).then(res.json({msg: 'unfollowed successfully' }));
