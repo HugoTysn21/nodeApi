@@ -4,7 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();// parse application/json
 const Sequelize = require('sequelize');
-const userClass = require('/Model/User');
+const userClass = require('./Model/User');
+const articleClass = require('./Model/Article')
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 
@@ -61,7 +62,7 @@ if (name && password) {
 const sequelize = new Sequelize({
     database: 'blog',
 username: 'root',
-password: 'root',
+password: '',
 dialect: 'mysql',
 });
 
@@ -122,6 +123,74 @@ const { name, password } = req.body;
 createUser({ name, password }).then(user =>
     res.json({ user, msg: 'account created successfully' })
 )
+});
+
+//create model for DB
+const Article = sequelize.define('article', {
+    title: {
+        type: Sequelize.STRING,
+    },
+    content: {
+        type: Sequelize.TEXT,
+    },
+    user_id: {
+        type: Sequelize.INTEGER,
+    },
+});
+
+Article.sync()
+    .then(() => console.log('Oh yeah! Article table created successfully'))
+.catch(err => console.log('BTW, did you enter wrong database credentials?'));
+
+const getAllArticles = async () => {
+    return await Article.findAll();
+};
+app.get('/article', function(req, res,next){
+    getAllArticles().then(article => res.json(article));
+});
+
+
+//create model for DB
+const Commentaire = sequelize.define('commentaire', {
+    content: {
+        type: Sequelize.TEXT,
+    },
+    user_id: {
+        type: Sequelize.INTEGER,
+    },
+    article_id: {
+        type: Sequelize.INTEGER,
+    },
+});
+
+Commentaire.sync()
+    .then(() => console.log('Oh yeah! Commentaire table created successfully'))
+.catch(err => console.log('BTW, did you enter wrong database credentials?'));
+const getAllCommentaire = async () => {
+    return await Commentaire.findAll();
+};
+app.get('/commentaire', function(req, res,next){
+    getAllCommentaire().then(commentaire => res.json(commentaire));
+});
+
+//create model for DB
+const Follow = sequelize.define('follow', {
+    user_id_follower: {
+        type: Sequelize.INTEGER,
+    },
+    user_id_followed: {
+        type: Sequelize.INTEGER,
+    },
+});
+
+Follow.sync()
+    .then(() => console.log('Oh yeah! Follow table created successfully'))
+.catch(err => console.log('BTW, did you enter wrong database credentials?'));
+const getAllFollow = async () => {
+    return await Follow.findAll();
+};
+app.get('/follow', function(req, res,next){
+    getAllFollow().then(follow => res.json(follow));
 });
 
 console.log("Hello world, This is an app to connect to sql server.");
