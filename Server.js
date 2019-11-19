@@ -52,13 +52,11 @@ if (login && password) {
     if (!user) {
         res.status(401).json({ msg: 'No such user found', user });
     }
+    // validate login and create token
     if (user.password === password) {
-        // from now on we’ll identify the user by the id and the id is
-        // the only personalized value that goes into our token
         let payload = { id: user.id };
         // the token is the user id and secretKey
         let token = jwt.sign(payload, jwtOptions.secretOrKey);
-
         res.json({ msg: 'ok', token: token });
         console.log(token)
 
