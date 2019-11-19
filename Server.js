@@ -2,6 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+var urlEncodeParser = bodyParser.urlencoded({extended:false});
 const app = express();
 const Sequelize = require('sequelize');
 const userClass = require('./Model/User');
@@ -70,7 +71,7 @@ app.get('/protected', passport.authenticate(`jwt`, { session: false }, function(
 const sequelize = new Sequelize({
     database: 'blog',
     username: 'root',
-    password: 'root',
+    password: '',
     dialect: 'mysql',
 });
 
@@ -129,8 +130,8 @@ getAllUsers().then(user => res.json(user));
 
 
 app.post('/register', function(req, res, next) {
-const { login, password, pseudo, realName, pict } = req.body;
-createUser({ login, password, pseudo, realName, pict }).then(user =>
+// const { login, password, pseudo, realName, pict } = req.body;
+createUser(req.body).then(user =>
     res.json({ user, msg: 'account created successfully' })
 )
 });
@@ -152,12 +153,21 @@ Article.sync()
     .then(() => console.log('Oh yeah! Article table created successfully'))
 .catch(err => console.log('BTW, did you enter wrong database credentials?'));
 
+const createArticle = async ({title, content, user_id}) => {
+    return Article.create({ title, content, user_id});
+};
 const getAllArticles = async () => {
     return await Article.findAll();
 };
 app.get('/article', function(req, res,next){
     getAllArticles().then(article => res.json(article));
 });
+//
+app.post('/article',urlEncodeParser, function(req, res, next) {
+    createArticle(req.body).then(article =>
+        res.json({ article, msg: 'article created successfully' })
+    )
+    });
 
 
 //create model for DB
@@ -173,6 +183,9 @@ const Commentaire = sequelize.define('commentaire', {
     },
 });
 
+const createCommentaire = async ({content, user_id, article_id}) => {
+    return Commentaire.create({content, user_id, article_id});
+};
 Commentaire.sync()
     .then(() => console.log('Oh yeah! Commentaire table created successfully'))
 .catch(err => console.log('BTW, did you enter wrong database credentials?'));
@@ -182,6 +195,11 @@ const getAllCommentaire = async () => {
 app.get('/commentaire', function(req, res,next){
     getAllCommentaire().then(commentaire => res.json(commentaire));
 });
+app.post('/commentaire',urlEncodeParser, function(req, res, next) {
+    createCommentaire(req.body).then(commentaire =>
+        res.json({ commentaire, msg: 'commentaire created successfully' })
+    )
+    });
 
 //create model for DB
 const Follow = sequelize.define('follow', {
