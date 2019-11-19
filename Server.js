@@ -264,7 +264,7 @@ const deleteCommentaire = async (usr_id, comm_id) => {
             user_id:{
                 [Op.eq]:usr_id
             },
-            commentaire_id:{
+            id:{
                 [Op.eq]:comm_id
             },
         }
@@ -300,7 +300,7 @@ app.put('/commentaire',urlEncodeParser,function(req,res,next){
     var date = new Date();
     var content = req.body.content;
     var art_id = req.body.art_id;
-    updCommentaire(date, title,content, id,art_id).then(commentaire =>
+    updCommentaire(date,content, id,art_id).then(commentaire =>
         res.json({ commentaire, msg: 'commentaire updated successfully' }))
 });
 //supprimer commentaire
@@ -327,11 +327,11 @@ Follow.sync()
     .then(() => console.log('Oh yeah! Follow table created successfully'))
 .catch(err => console.log('BTW, did you enter wrong database credentials?'));
 //unfollow
-const unfollow = async (user_id, followed_id) => {
+const unfollow = async (follower_id, followed_id) => {
     return await Follow.destroy({
         where:{
             follower_id:{
-                [Op.eq]:user_id
+                [Op.eq]:follower_id
             },
             followed_id:{
                 [Op.eq]:followed_id
@@ -340,8 +340,8 @@ const unfollow = async (user_id, followed_id) => {
     })
 };
 //follow
-const follow = async (user_id, followed_id) => {
-    return await Follow.create({user_id, followed_id})
+const follow = async (follower_id, followed_id) => {
+    return await Follow.create({follower_id, followed_id})
 };
 //recup tous les follow
 const getAllFollow = async () => {
@@ -355,9 +355,9 @@ app.post('/follow', urlEncodeParser, function(req,res, next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
-    let user_id = payload.id;
+    let follower_id = payload.id;
     var followed_id = req.body.followed_id;
-    follow(user_id,followed_id).then(follow =>
+    follow(follower_id,followed_id).then(follow =>
         res.json({ follow, msg: 'followed successfully' }))
 });
 //unfollow
@@ -365,9 +365,9 @@ app.put('/unfollow', function(req,res,next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
-    let user_id = payload.id;
+    let follower_id = payload.id;
     var followed_id = req.body.followed_id;
-    unfollow(user_id, followed_id).then(res.json({msg: 'unfollowed successfully' }));
+    unfollow(follower_id, followed_id).then(res.json({msg: 'unfollowed successfully' }));
 });
 
 console.log("Hello world, This is an app to connect to sql server.");
