@@ -2,12 +2,14 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();// parse application/json
+const app = express();
 const Sequelize = require('sequelize');
 const userClass = require('/Model/User');
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
+const jwt = require("jsonwebtoken");
 
+// parse application/json
 app.use(bodyParser.json());
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,7 +50,8 @@ if (name && password) {
         res.status(401).json({ msg: 'No such user found', user });
     }
     if (user.password === password) {
-        // from now on we’ll identify the user by the id and the id is// the only personalized value that goes into our token
+        // from now on we’ll identify the user by the id and the id is
+        // the only personalized value that goes into our token
         let payload = { id: user.id };
         let token = jwt.sign(payload, jwtOptions.secretOrKey);
         res.json({ msg: 'ok', token: token });
@@ -58,11 +61,16 @@ if (name && password) {
 }
 });
 
+// protected route
+app.get('/protected', passport.authenticate(`jwt`, { session: false }, function(req, res) {
+    res.json({ msg: 'Congrats! You are seeing this because you are authorized'});
+}));
+
 const sequelize = new Sequelize({
     database: 'blog',
-username: 'root',
-password: 'root',
-dialect: 'mysql',
+    username: 'root',
+    password: 'root',
+    dialect: 'mysql',
 });
 
 let newUser = new userClass('test','test','test','test','/src/test');
@@ -113,13 +121,15 @@ const createUser = async ({ login, password, pseudo, realName, pict }) => {
         where: obj,
     });
 };
+
 app.get('/users', function(req, res) {
 getAllUsers().then(user => res.json(user));
 });
 
+
 app.post('/register', function(req, res, next) {
-const { name, password } = req.body;
-createUser({ name, password }).then(user =>
+const { login, password, pseudo, realName, pict } = req.body;
+createUser({ login, password, pseudo, realName, pict }).then(user =>
     res.json({ user, msg: 'account created successfully' })
 )
 });
