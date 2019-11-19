@@ -16,7 +16,3 @@ module.exports = class User {
         this.picture = picture;
     }
 }
-
-function addUserToBDD (User){
-
-}
