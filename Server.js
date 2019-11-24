@@ -144,6 +144,7 @@ app.post('/register', function(req, res, next) {
 // const { login, password, pseudo, realName, pict } = req.body;
 createUser(req.body).then(user =>
     res.json({ user, msg: 'account created successfully' })
+    // faire redirection vers /login
 )
 });
 
@@ -167,9 +168,13 @@ Article.sync()
 const createArticle = async ({title, content, user_id}) => {
     return Article.create({ title, content, user_id});
 };
+
+//Liste tous les articles.
 const getAllArticles = async () => {
     return await Article.findAll();
 };
+
+//update articles
 const updArticle = async (updatedAt,title, content, id) => {
     return Article.update({
         updatedAt : updatedAt, 
