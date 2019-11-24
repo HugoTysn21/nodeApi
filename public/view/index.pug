@@ -4,21 +4,21 @@ head
     link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
     title Blog
 div
-    form(action='/' method='post')
+    form(action='/login' method='put')
         .form-group
-            label(for='exampleInputEmail1') Email address
-            input#exampleInputEmail1.form-control(type='email' aria-describedby='emailHelp' placeholder='Enter email')
+            label(for='login') Email address
+            input#Login.form-control(type='email' aria-describedby='emailHelp' placeholder='Enter email')
             small#emailHelp.form-text.text-muted We&apos;ll never share your email with anyone else.
         .form-group
-            label(for='exampleInputPassword1') Password
-            input#exampleInputPassword1.form-control(type='password' placeholder='Password')
+            label(for='password') Password
+            input#password.form-control(type='password' placeholder='Password')
         .form-group
             label(for='realname') Real name
-            input#realname.form-control(type='text' aria-describedby='emailHelp' placeholder='Enter email')
+            input#realname.form-control(type='text' placeholder='Real Name')
         .form-group
             label(for='pseudo') Pseudo
-            input#pseudo.form-control(type='text' placeholder='Password')
+            input#pseudo.form-control(type='text' placeholder='Pseudo')
         .form-group
             label(for='picture') Picture
-            input#Picture.form-control(type='text' placeholder='Password')
+            input#Picture.form-control(type='text' placeholder='Picture')
         button.btn.btn-primary(type='submit') Submit

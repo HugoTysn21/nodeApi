@@ -24,8 +24,19 @@ app.use(express.static(__dirname + '/public'));
 
 // add a basic route
 app.get('/', function(req, res) {
-    //res.json({ message: 'Express is up!' });
     res.render('index')
+});
+app.get('/user', function(req, res) {
+    res.render('users')
+});
+app.get('/listArticles', function(req, res) {
+    res.render('article')
+});
+app.get('/login', function(req, res) {
+    res.render('login')
+});
+app.get('/article', function(req, res) {
+    res.render('userArticles')
 });
 
 // ExtractJwt to help extract the token
