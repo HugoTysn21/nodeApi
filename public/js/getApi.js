@@ -1,5 +1,11 @@
     // accede au div du pug (front)
-    let articles = document.getElementById('#article');
+    let article = document.getElementById('#article');
+    let users =  document.getElementById('users');
+    let userArticle = document.getElementById('userArticle');
+    let comment = document.getElementById('comment');
+    let myArticle = document.getElementById('myArticle');
+    let follows = document.getElementById('follows');
+    let userInfo = document.getElementById('userInfo');
 
     // faire un append dans la div en question, apres avoir fetch les data de l'api
 
@@ -16,15 +22,12 @@ const getUsers = async function () {
         let dataJson = await response.json();
         for (let index = 0; index < dataJson.length; index++) {
             const data = dataJson[index];
-            let mail = data.login
-            //afficher le login dans la view
+            let mail = data.login;
+            let picture = data.picture;
+            let pseudo = data.pseudo;
 
-            let picture = data.picture
-            // affiche la photo dans la view
-
-            let pseudo = data.pseudo
-            //affiche le peudo dans la view
-
+            users.append("<div><p>login : "+mail+"</p><p>pseudo : "+pseudo+"</p><button type=\"submit\" class=\"btn btn-primary follow\">Follow</button></div>")
+            userInfo.append("<div><p>login : "+mail+"</p><p>pseudo : "+pseudo+"</p></div>")
         }
 
     }
@@ -41,20 +44,25 @@ const getArticles = async function () {
         for (let index = 0; index < dataJson.length; index++) {
             const data = dataJson[index];
             let title = data.title;
-            // affiche le titre dans la view
-
             let content = data.content;
-            // affiche le contenu dans la view
-
             let idCreateur = data.user_id;
-            //affiche l'id du créateur dans la view
-
             let dateCreation = data.createdAt;
-            //affiche la date de création dans la view
-
             let dateModification = data.updatedAt;
-            //affiche la date de modification dans la view
 
+            article.append("<div><p>title : "+title+"</p>" +
+                "<div><p>pseudo : "+pseudo+"</p></div>" +
+                "<div><p>Content : "+content+"</p></div>" +
+                "<div><p>date de création : "+dateCreation+"</p></div>" +
+                "<div><p>date de modification : "+dateModification+"</p></div>" +
+                "<div class='comment'></div></div>")
+
+            // show also into user profile
+            myArticle.append("<div><p>title : "+title+"</p>" +
+                "<div><p>pseudo : "+pseudo+"</p></div>" +
+                "<div><p>Content : "+content+"</p></div>" +
+                "<div><p>date de création : "+dateCreation+"</p></div>" +
+                "<div><p>date de modification : "+dateModification+"</p></div>" +
+                "<div class='comment'></div></div>")
         }
     }
     catch (e) {
@@ -69,19 +77,18 @@ const getCommentaires = async function () {
         for (let index = 0; index < dataJson.length; index++) {
             const data = dataJson[index];
             let content = data.content;
-            // affiche le contenu dans la view
-
             let auteur = data.user_id;
-            //affiche l'id du créateur dans la view
-
             let article_id = data.article_id;
-            //affiche l'id de l'article dans la view
-
             let dateCreation = data.createdAt;
-            //affiche la date de création dans la view
-
             let dateModification = data.updatedAt;
-            //affiche la date de modification dans la view
+
+            // affiche comment dans div d'article
+            comment.append("<div><p>title : "+title+"</p>" +
+                "<div><p>pseudo : "+auteur+"</p><p>  article : "+article_id+"</p></div>" +
+                "<div><p>Content : "+content+"</p></div>" +
+                "<div><p>date de création : "+dateCreation+"</p></div>" +
+                "<div><p>date de modification : "+dateModification+"</p></div>" +
+                "</div>")
 
         }
     }
@@ -97,14 +104,13 @@ const getFollows = async function () {
         for (let index = 0; index < dataJson.length; index++) {
             const data = dataJson[index];
             let follower = data.content;
-            // affiche l'id de la personne qui suit dans la view
-
             let followed = data.user_id;
-            //affiche l'id de la personne suivie dans la view
+            let dateCreation = data.createdAt; // no show
 
-            let dateCreation = data.createdAt;
-            //affiche la date du follow dans la view
-
+            follows.append("<div><p>title : "+title+"</p>" +
+                "<div><p>>Followed : "+followed+"</p></div>" +
+                "<div><p>follower : "+follower+"</p></div>" +
+                "</div>")
         }
     }
     catch (e) {
