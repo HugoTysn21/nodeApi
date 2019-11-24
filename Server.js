@@ -144,6 +144,7 @@ const getUser = async obj => {
 
 app.get('/users', function(req, res) {
 getAllUsers().then(user => res.json(user));
+
 });
 
 app.post('/register', function(req, res, next) {
