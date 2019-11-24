@@ -38,6 +38,9 @@ app.get('/login', function(req, res) {
 app.get('/article', function(req, res) {
     res.render('userArticles')
 });
+app.get('/profile', function(req, res) {
+    res.render('profile')
+});
 
 // ExtractJwt to help extract the token
 let ExtractJwt = passportJWT.ExtractJwt;
@@ -371,7 +374,7 @@ const getAllFollow = async () => {
     return await Follow.findAll();
 };
 app.get('/follows', function(req, res,next){
-    getAllFollow().then(follow => res.json(follow));
+    getAllFollow().then(follows => res.json(follows));
 });
 //follow qqun
 app.post('/followSmne', urlEncodeParser, function(req,res, next){
