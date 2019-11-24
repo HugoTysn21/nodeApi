@@ -11,19 +11,20 @@ const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const jwt = require("jsonwebtoken");
 const Op = Sequelize.Op;
+const path = require('path');
 
 // parse application/json
 app.use(bodyParser.json());
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('views', path.join(__dirname, 'view'));
+app.set('views', path.join(__dirname, 'public/view'));
 app.set('view engine', 'pug');
 app.use(express.static('public'));
 app.use(express.static(__dirname + '/public'));
 
 // add a basic route
 app.get('/', function(req, res) {
-    res.json({ message: 'Express is up!' });
+    //res.json({ message: 'Express is up!' });
     res.render('index')
 });
 
