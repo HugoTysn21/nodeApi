@@ -34,7 +34,7 @@ const getUsers = async function () {
 };
 
 
-const getArticle = async function () {
+const getArticles = async function () {
     try {
         let response = await fetch('http://localhost:3000/articles');
         let dataJson = await response.json();
@@ -62,7 +62,7 @@ const getArticle = async function () {
     }
 };
 
-const getComment = async function () {
+const getCommentaires = async function () {
     try {
         let response = await fetch('http://localhost:3000/commentaires');
         let dataJson = await response.json();
@@ -90,7 +90,7 @@ const getComment = async function () {
     }
 };
 
-const getFollow = async function () {
+const getFollows = async function () {
     try {
         let response = await fetch('http://localhost:3000/follows');
         let dataJson = await response.json();
@@ -113,6 +113,6 @@ const getFollow = async function () {
 };
 
 getUsers();
-getArticle();
-getComment();
-getFollow();
+getArticles();
+getCommentaires();
+getFollows();
