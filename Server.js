@@ -327,21 +327,21 @@ Follow.sync()
     .then(() => console.log('Oh yeah! Follow table created successfully'))
 .catch(err => console.log('BTW, did you enter wrong database credentials?'));
 //unfollow
-const unfollow = async (follower_id, followed_id) => {
+const unfollow = async (user_id_follower, user_id_followed) => {
     return await Follow.destroy({
         where:{
-            follower_id:{
-                [Op.eq]:follower_id
+            user_id_follower:{
+                [Op.eq]:user_id_follower
             },
-            followed_id:{
-                [Op.eq]:followed_id
+            user_id_followed:{
+                [Op.eq]:user_id_followed
             }
         }
     })
 };
 //follow
-const follow = async (follower_id, followed_id) => {
-    return await Follow.create({follower_id, followed_id})
+const follow = async (user_id_follower, user_id_followed) => {
+    return await Follow.create({user_id_follower, user_id_followed})
 };
 //recup tous les follow
 const getAllFollow = async () => {
@@ -355,9 +355,9 @@ app.post('/follow', urlEncodeParser, function(req,res, next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
-    let follower_id = payload.id;
-    var followed_id = req.body.followed_id;
-    follow(follower_id,followed_id).then(follow =>
+    let user_id_follower = payload.id;
+    var user_id_followed = req.body.user_id_followed;
+    follow(user_id_follower,user_id_followed).then(follow =>
         res.json({ follow, msg: 'followed successfully' }))
 });
 //unfollow
@@ -365,9 +365,9 @@ app.put('/unfollow', function(req,res,next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
-    let follower_id = payload.id;
-    var followed_id = req.body.followed_id;
-    unfollow(follower_id, followed_id).then(res.json({msg: 'unfollowed successfully' }));
+    let user_id_follower = payload.id;
+    var user_id_followed = req.body.user_id_followed;
+    unfollow(user_id_follower, user_id_followed).then(res.json({msg: 'unfollowed successfully' }));
 });
 
 console.log("Hello world, This is an app to connect to sql server.");
