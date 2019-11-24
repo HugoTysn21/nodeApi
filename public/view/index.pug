@@ -1,0 +1,21 @@
+doctype html
+head
+    meta(charset='UTF-8')
+    title Blog
+div
+    form(action='/login' method='post')
+        div
+            label(for='name') Nom :
+            input#name(type='text' name='user_name')
+        div
+            label(for='mail') e-mail&#x202F;:
+            input#mail(type='email' name='user_mail')
+        div
+            label(for='realname') Real Name :
+            input#realname(type='text' name='realname')
+        div
+            label(for='pseudo') Pseudo :
+            input#pseudo(type='text' name='pseudo')
+        div
+            label(for='picture') Picture :
+            input#picture(type='text' name='picture')

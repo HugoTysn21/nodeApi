@@ -16,10 +16,15 @@ const Op = Sequelize.Op;
 app.use(bodyParser.json());
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set('views', path.join(__dirname, 'view'));
+app.set('view engine', 'pug');
+app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 // add a basic route
 app.get('/', function(req, res) {
     res.json({ message: 'Express is up!' });
+    res.render('index')
 });
 
 // ExtractJwt to help extract the token
