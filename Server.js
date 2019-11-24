@@ -219,17 +219,17 @@ const deleteArticle = async (usr_id, art_id) => {
     });
 };
 //recuperer les articles
-app.get('/article', function(req, res,next){
+app.get('/articles', function(req, res,next){
     getAllArticles().then(article => res.json(article));
 });
 //ajout article
-app.post('/article',urlEncodeParser, function(req, res, next) {
+app.post('/addArticles',urlEncodeParser, function(req, res, next) {
     createArticle(req.body).then(article =>
         res.json({ article, msg: 'article created successfully' })
     )
 });
 //màj article
-app.put('/article', urlEncodeParser, function(req, res, next){
+app.put('/updArticles', urlEncodeParser, function(req, res, next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     console.log(decoded);
@@ -242,7 +242,7 @@ app.put('/article', urlEncodeParser, function(req, res, next){
         res.json({ article, msg: 'article updated successfully' }))
 });
 //Supprimer une article
-app.put('/deleteArticle', urlEncodeParser, function(req, res, next){
+app.put('/deleteArticles', urlEncodeParser, function(req, res, next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
@@ -305,17 +305,17 @@ const getAllCommentaire = async () => {
     return await Commentaire.findAll();
 };
 //recup tous les commentaires
-app.get('/commentaire', function(req, res,next){
+app.get('/commentaires', function(req, res,next){
     getAllCommentaire().then(commentaire => res.json(commentaire));
 });
 //ajouter un commentaire
-app.post('/commentaire',urlEncodeParser, function(req, res, next) {
+app.post('/addCommentaires',urlEncodeParser, function(req, res, next) {
     createCommentaire(req.body).then(commentaire =>
         res.json({ commentaire, msg: 'commentaire created successfully' })
     )
 });
 //maj commentaire
-app.put('/commentaire',urlEncodeParser,function(req,res,next){
+app.put('/updCommentaires',urlEncodeParser,function(req,res,next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
@@ -327,7 +327,7 @@ app.put('/commentaire',urlEncodeParser,function(req,res,next){
         res.json({ commentaire, msg: 'commentaire updated successfully' }))
 });
 //supprimer commentaire
-app.put('/deleteCommentaire', urlEncodeParser, function(req, res, next){
+app.put('/deleteCommentaires', urlEncodeParser, function(req, res, next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
@@ -370,11 +370,11 @@ const follow = async (user_id_follower, user_id_followed) => {
 const getAllFollow = async () => {
     return await Follow.findAll();
 };
-app.get('/follow', function(req, res,next){
+app.get('/follows', function(req, res,next){
     getAllFollow().then(follow => res.json(follow));
 });
 //follow qqun
-app.post('/follow', urlEncodeParser, function(req,res, next){
+app.post('/followSmne', urlEncodeParser, function(req,res, next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
@@ -384,7 +384,7 @@ app.post('/follow', urlEncodeParser, function(req,res, next){
         res.json({ follow, msg: 'followed successfully' }))
 });
 //unfollow
-app.put('/unfollow', function(req,res,next){
+app.put('/unfollowSmne', function(req,res,next){
     let tOken = req.body.jwt;
     var decoded = jwt.verify(tOken,'yeswecan');
     let payload = jwt.decode(tOken)
